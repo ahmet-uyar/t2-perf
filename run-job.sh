@@ -103,18 +103,3 @@ echo "Sleep finished. killing the job ......"
 
 twister2-0.5.0-SNAPSHOT/bin/twister2 kill kubernetes $jobID
 
-########################################
-# wait until all killed
-runningPods=$(kubectl get pods | grep Running | wc -l)
-
-while [ $runningPods -ne $EXTRA ]; do
-
-  # sleep
-  sleep 10
-
-  # get number of Running pods
-  runningPods=$(kubectl get pods | grep Running | wc -l)
-  echo "Running Pods: $runningPods"
-done
-
-echo "Only $runningPods pods are running."

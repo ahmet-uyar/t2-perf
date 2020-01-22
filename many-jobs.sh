@@ -4,6 +4,8 @@
 # Run many jobs
 ####################################################
 
+EXTRA=5
+
 if [ $# -ne "1" ]; then
   echo "Please provide following parameters: delaysDir"
   exit 1
@@ -30,3 +32,19 @@ done
 wait
 
 java -cp target/t2-perf-1.0.jar t2.ManyJobDelays $delaysDir
+
+########################################
+# wait until all killed
+runningPods=$(kubectl get pods | grep Running | wc -l)
+
+while [ $runningPods -ne $EXTRA ]; do
+
+  # sleep
+  sleep 10
+
+  # get number of Running pods
+  runningPods=$(kubectl get pods | grep Running | wc -l)
+  echo "Running Pods: $runningPods"
+done
+
+echo "Only $runningPods pods are running."
