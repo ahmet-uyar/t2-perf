@@ -1,10 +1,9 @@
 #!/bin/bash
 
-EXTRA=5
 LOGS_DIR="logs"
 
-if [ $# -ne "4" ]; then
-  echo "Please provide following parameters: jobName numberOfWorkers numberOfJobs delaysDir"
+if [ $# -ne "5" ]; then
+  echo "Please provide following parameters: jobName numberOfWorkers numberOfJobs delaysDir extraPods"
   exit 1
 fi
 
@@ -12,6 +11,7 @@ jobName=$1
 workers=$2
 jobs=$3
 delaysDir=$4
+extraPods=$5
 
 echo "jobName: $jobName, workers: $workers, jobs: $jobs, delaysDir: $delaysDir"
 
@@ -71,12 +71,11 @@ done
 ##############################################
 # calculate delays and write to file
 
-delayFile=${delaysDir}/${jobID}.txt
-java -cp target/t2-perf-1.0.jar t2.Delays $jobLogDir > $delayFile
+java -cp target/t2-perf-1.0.jar t2.Delays $jobLogDir $delaysDir
 
 ########################################
 # watch pods until all pods running
-allPods=$((jobPods * jobs + EXTRA))
+allPods=$((jobPods * jobs + extraPods))
 
 runningPods=$(kubectl get pods | grep Running | wc -l)
 

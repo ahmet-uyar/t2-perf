@@ -4,14 +4,14 @@
 # Run many jobs
 ####################################################
 
-EXTRA=5
-
-if [ $# -ne "1" ]; then
-  echo "Please provide following parameters: delaysDir"
+if [ $# -ne "2" ]; then
+  echo "Please provide following parameters: delaysDir extraPods"
   exit 1
 fi
 
 delaysDir=$1
+extraPods=$2
+
 # create directory if not exist
 mkdir $delaysDir 2>/dev/null
 
@@ -25,19 +25,18 @@ for ((i=0; i<jobs ;i++)); do
   jobName="j${i}"
 
   # start job in background
-  ./run-job.sh $jobName $workersPerJob $jobs $delaysDir &
+  ./run-job.sh $jobName $workersPerJob $jobs $delaysDir $extraPods &
   echo "$!" >> pids.txt
 done
 
+# wait all sub processes to finish
 wait
-
-java -cp target/t2-perf-1.0.jar t2.ManyJobDelays $delaysDir
 
 ########################################
 # wait until all killed
 runningPods=$(kubectl get pods | grep Running | wc -l)
 
-while [ $runningPods -ne $EXTRA ]; do
+while [ $runningPods -ne $extraPods ]; do
 
   # sleep
   sleep 10

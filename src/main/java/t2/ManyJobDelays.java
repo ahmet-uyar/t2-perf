@@ -10,6 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * ready many delay files and construct a summary file
+ * currently not used
+ */
 public final class ManyJobDelays {
 
   private ManyJobDelays() { }
@@ -27,6 +31,9 @@ public final class ManyJobDelays {
     File[] delayFiles = new File(delaysDir).listFiles();
     List<String> outList = new LinkedList<>();
     for (File f: delayFiles) {
+      if (f.toString().contains("summary")) {
+        continue;
+      }
       outList.add(processFile(f));
     }
 
@@ -47,7 +54,7 @@ public final class ManyJobDelays {
     String[] words = firstLine.split("\t");
     String jobID = words[0];
     String launchDelay = words[words.length - 1];
-    double ld = Integer.parseInt(launchDelay) / 1000;
+    double ld = Integer.parseInt(launchDelay) / 1000.0;
 
     List<Integer> podStarts = new LinkedList<>();
     List<Integer> allJoins = new LinkedList<>();
