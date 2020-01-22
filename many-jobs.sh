@@ -4,13 +4,16 @@
 # Run many jobs
 ####################################################
 
-if [ $# -ne "2" ]; then
-  echo "Please provide following parameters: delaysDir extraPods"
+if [ $# -ne "1" ]; then
+  echo "Please provide following parameters: delaysDir"
   exit 1
 fi
 
 delaysDir=$1
-extraPods=$2
+
+# get already running pods in the cluster
+extraPods=$(kubectl get pods | grep Running | wc -l)
+echo extraPods: $extraPods
 
 # create directory if not exist
 mkdir $delaysDir 2>/dev/null
