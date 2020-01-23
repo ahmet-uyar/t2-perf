@@ -1,0 +1,52 @@
+################################################
+# A sample pod using Twister2 K8s Container
+# To test startup times with plain pods
+################################################
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: t2-pod
+  namespace: default
+  labels:
+    app: t2-pod
+spec:
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 0
+
+  containers:
+    - image: auyar/twister2-k8s:0.5.0-SNAPSHOT
+      name: t2-container
+      command: ["bash"]
+      args: ["-c", "./init.sh"]
+
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "1.0"
+        limits:
+          memory: "256Mi"
+          cpu: "1.0"
+      volumeMounts:
+        - name: twister2-shared-dir
+          mountPath: /twister2-shared
+      env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: CONTAINER_NAME
+          value: "t2-container"
+        - name: POD_MEMORY_VOLUME
+          value: "/twister2-memory-dir"
+        - name: JOB_PACKAGE_FILENAME
+          value: "test.tar.gz"
+  volumes:
+    - name: twister2-shared-dir
+      emptyDir: {medium: Memory}
