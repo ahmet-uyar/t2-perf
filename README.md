@@ -1,5 +1,4 @@
-# t2-perf
-Twister2 Performance Tests in Kubernetes Clusters
+# Twister2 Performance Tests in Kubernetes Clusters
 
 Get Twister2 package twister2-0.5.0-SNAPSHOT.tar.gz and unpack it
 ```bash
