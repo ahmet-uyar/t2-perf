@@ -25,5 +25,9 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# add new line before delays
+echo
+echo ============================================================
+
 # calculate delays
 java -cp ../target/t2-perf-1.0.jar standalone.MPIDelays $logFile
