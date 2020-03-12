@@ -30,7 +30,7 @@ public class MPIDelays {
 
     // check number of delays in each map
     if (mpiWorkerDelays.size() == workerStartDelays.size() && workerStartDelays.size() == allJoinedDelays.size()) {
-      System.out.println("Number of workers: " + mpiWorkerDelays.size());
+//      System.out.println("Number of workers: " + mpiWorkerDelays.size());
     } else {
       System.out.println("Not all maps have the same size: ");
       System.out.println("size of mpiWorkerDelays: " + mpiWorkerDelays.size());
