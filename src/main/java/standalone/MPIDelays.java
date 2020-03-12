@@ -38,7 +38,9 @@ public class MPIDelays {
       System.out.println("size of allJoinedDelays: " + allJoinedDelays.size());
     }
 
-    // print delays
+    // print delays,
+    // first print header line: jobID   numberOfWorkers
+    System.out.println(Delays.readJobID() + "\t" + mpiWorkerDelays.size());
     for (Map.Entry<Integer, Long> entry: mpiWorkerDelays.entrySet()) {
       System.out.println(entry.getKey() + "\t"
           + entry.getValue() + "\t"
