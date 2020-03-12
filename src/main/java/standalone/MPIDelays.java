@@ -7,12 +7,12 @@ import java.util.*;
 public class MPIDelays {
   public static void main(String[] args) {
 
-    String jobLogsFile;
     String jobID;
+    String jobLogsFile;
 
     if (args.length == 2) {
-      jobLogsFile = args[0];
       jobID = args[0];
+      jobLogsFile = args[1];
     } else {
       System.out.println("Please provide jobID and jobLogsFile as parameters");
       return;
