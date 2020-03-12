@@ -14,11 +14,15 @@ logsDir=logs
 # create directory if not exist
 mkdir $logsDir 2>/dev/null
 
-logFile=${logsDir}/${jobName}.log
+# generate jobID
+jobID=$(java -cp ../target/t2-perf-1.0.jar:${T2_DIR}/lib/libapi-utils-java.jar t2.GenJobID $jobName)
+
+echo "jobID: $jobID"
+logFile=${logsDir}/${jobID}.log
 
 # submit the job
 # print logs to both console and the logFile
-$T2_DIR/bin/twister2 submit standalone jar ../target/t2-perf-1.0.jar standalone.SingleJobWorker $jobName $workers 2>&1 | tee ${logFile}
+$T2_DIR/bin/twister2 submit standalone jar ../target/t2-perf-1.0.jar standalone.SingleJobWorker $jobID $workers 2>&1 | tee ${logFile}
 
 if [ $? -ne 0 ]; then
   echo "Job did not complete successfully. Exiting..."
@@ -30,4 +34,4 @@ echo
 echo ============================================================
 
 # calculate delays
-java -cp ../target/t2-perf-1.0.jar standalone.MPIDelays $logFile
+java -cp ../target/t2-perf-1.0.jar standalone.MPIDelays $jobID $logFile

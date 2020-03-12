@@ -8,11 +8,13 @@ public class MPIDelays {
   public static void main(String[] args) {
 
     String jobLogsFile;
+    String jobID;
 
-    if (args.length == 1) {
+    if (args.length == 2) {
       jobLogsFile = args[0];
+      jobID = args[0];
     } else {
-      System.out.println("Please provide jobLogsFile as a parameter");
+      System.out.println("Please provide jobID and jobLogsFile as parameters");
       return;
     }
 
@@ -40,7 +42,7 @@ public class MPIDelays {
 
     // print delays,
     // first print header line: jobID   numberOfWorkers
-    System.out.println(Delays.readJobID() + "\t" + mpiWorkerDelays.size());
+    System.out.println(jobID + "\t" + mpiWorkerDelays.size());
     for (Map.Entry<Integer, Long> entry: mpiWorkerDelays.entrySet()) {
       System.out.println(entry.getKey() + "\t"
           + entry.getValue() + "\t"

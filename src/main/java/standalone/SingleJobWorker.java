@@ -3,6 +3,7 @@ package standalone;
 import edu.iu.dsc.tws.api.JobConfig;
 import edu.iu.dsc.tws.api.Twister2Job;
 import edu.iu.dsc.tws.api.config.Config;
+import edu.iu.dsc.tws.api.config.Context;
 import edu.iu.dsc.tws.api.resource.*;
 import edu.iu.dsc.tws.proto.jobmaster.JobMasterAPI;
 import edu.iu.dsc.tws.rsched.core.ResourceAllocator;
@@ -103,11 +104,11 @@ public class SingleJobWorker implements IWorker, IAllJoinedListener {
 
   public static void main(String[] args) {
     // lets take number of workers as an command line argument
-    String jobName = "j1";
+    String jobID = "j1";
     int numberOfWorkers = 4;
 
     if (args.length == 2) {
-      jobName = args[0];
+      jobID = args[0];
       numberOfWorkers = Integer.valueOf(args[1]);
     }
 
@@ -118,8 +119,12 @@ public class SingleJobWorker implements IWorker, IAllJoinedListener {
     JobConfig jobConfig = new JobConfig();
     jobConfig.put("JOB_SUBMIT_TIME", System.currentTimeMillis() + "");
 
+    config = Config.newBuilder().putAll(config)
+        .put(Context.JOB_ID, jobID)
+        .build();
+
     Twister2Job twister2Job = Twister2Job.newBuilder()
-        .setJobName(jobName)
+        .setJobName(jobID)
         .setWorkerClass(SingleJobWorker.class)
         .addComputeResource(1.0, 256, numberOfWorkers)
         .setConfig(jobConfig)
