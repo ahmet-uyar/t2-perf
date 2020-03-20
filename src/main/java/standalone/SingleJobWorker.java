@@ -106,10 +106,12 @@ public class SingleJobWorker implements IWorker, IAllJoinedListener {
     // lets take number of workers as an command line argument
     String jobID = "j1";
     int numberOfWorkers = 4;
+    int waitConstant = 1;
 
-    if (args.length == 2) {
+    if (args.length == 3) {
       jobID = args[0];
       numberOfWorkers = Integer.valueOf(args[1]);
+      waitConstant = Integer.valueOf(args[2]);
     }
 
     // first load the configurations from command line and config files
@@ -118,6 +120,7 @@ public class SingleJobWorker implements IWorker, IAllJoinedListener {
     // lets put a configuration here
     JobConfig jobConfig = new JobConfig();
     jobConfig.put("JOB_SUBMIT_TIME", System.currentTimeMillis() + "");
+    jobConfig.put("WAIT_CONSTANT", waitConstant);
 
     config = Config.newBuilder().putAll(config)
         .put(Context.JOB_ID, jobID)
