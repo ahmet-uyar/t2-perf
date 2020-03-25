@@ -15,8 +15,10 @@ summaryFile=${delaysDir}/summary.txt
 # create directory if not exist
 mkdir $delaysDir 2>/dev/null
 
-jobs=4
-workersPerJob=4
+jobs=6
+workersPerJob=2
+
+echo jobs: $jobs	workersPerJob: $workersPerJob  >> $summaryFile
 
 rm pids.txt 2>/dev/null
 rm jobids.txt 2>/dev/null

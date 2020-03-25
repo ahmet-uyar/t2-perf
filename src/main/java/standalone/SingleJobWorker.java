@@ -116,8 +116,10 @@ public class SingleJobWorker implements IWorker, IAllJoinedListener {
     Config config = ResourceAllocator.loadConfig(new HashMap<>());
 
     // lets put a configuration here
+    long ts = System.currentTimeMillis();
+    LOG.info("jobSubmitTime: " + ts);
     JobConfig jobConfig = new JobConfig();
-    jobConfig.put("JOB_SUBMIT_TIME", System.currentTimeMillis() + "");
+    jobConfig.put("JOB_SUBMIT_TIME", ts + "");
 
     config = Config.newBuilder().putAll(config)
         .put(Context.JOB_ID, jobID)
