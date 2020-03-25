@@ -22,8 +22,8 @@ logFile=${logsDir}/${jobID}.log
 
 # submit the job
 # print logs to both console and the logFile
-$T2_DIR/bin/twister2 submit standalone jar ../target/t2-perf-1.0.jar standalone.SingleJobWorker $jobID $workers 0 2>&1 | tee ${logFile}
-#$T2_DIR/bin/twister2 submit standalone jar ../target/t2-perf-1.0.jar standalone.SingleJobWorker $jobID $workers 0
+$T2_DIR/bin/twister2 submit standalone jar ../target/t2-perf-1.0.jar standalone.SingleJobWorker $jobID $workers 2>&1 | tee ${logFile}
+#$T2_DIR/bin/twister2 submit standalone jar ../target/t2-perf-1.0.jar standalone.SingleJobWorker $jobID $workers
 
 if [ $? -ne 0 ]; then
   echo "Job did not complete successfully. Exiting..."
