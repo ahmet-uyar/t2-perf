@@ -2,6 +2,11 @@ package standalone;
 
 import t2.Delays;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class MPIDelays {
@@ -9,14 +14,38 @@ public class MPIDelays {
 
     String jobID;
     String jobLogsFile;
+    String summaryFile = null;
+    boolean outToConsole;
 
     if (args.length == 2) {
       jobID = args[0];
       jobLogsFile = args[1];
+      outToConsole = true;
+    } else if (args.length == 3) {
+      jobID = args[0];
+      jobLogsFile = args[1];
+      summaryFile = args[2];
+      outToConsole = false;
     } else {
-      System.out.println("Please provide jobID and jobLogsFile as parameters");
+      System.out.println("Please provide jobID jobLogsFile summaryFile (optional) as parameters");
       return;
     }
+
+    String summary = calculateDelays(jobID, jobLogsFile, outToConsole);
+
+    if (summaryFile != null) {
+      Path summaryPath = Paths.get(summaryFile);
+      try {
+        Files.write(summaryPath, Collections.singleton(summary), Charset.defaultCharset());
+        System.out.println("Summary: " + summary);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+  }
+
+  public static String calculateDelays(String jobID, String jobLogsFile, boolean outToConsole) {
 
     List<String> lines = Delays.readFileLines(jobLogsFile);
     Map<Integer, Long> mpiWorkerDelays = readDelays(lines, "mpiWorkerStartDelay");
@@ -40,23 +69,33 @@ public class MPIDelays {
       System.out.println("size of allJoinedDelays: " + allJoinedDelays.size());
     }
 
-    // print delays,
-    // first print header line: jobID   numberOfWorkers
-    System.out.println(jobID + "\t" + mpiWorkerDelays.size());
-    for (Map.Entry<Integer, Long> entry: mpiWorkerDelays.entrySet()) {
-      System.out.println(entry.getKey() + "\t"
-          + entry.getValue() + "\t"
-          + workerStartDelays.get(entry.getKey()) + "\t"
-          + allJoinedDelays.get(entry.getKey())
-      );
+    if (outToConsole) {
+      // print delays,
+      // first print header line: jobID   numberOfWorkers
+      System.out.println(jobID + "\t" + mpiWorkerDelays.size());
+      for (Map.Entry<Integer, Long> entry : mpiWorkerDelays.entrySet()) {
+        System.out.println(entry.getKey() + "\t"
+            + entry.getValue() + "\t"
+            + workerStartDelays.get(entry.getKey()) + "\t"
+            + allJoinedDelays.get(entry.getKey())
+        );
+      }
     }
 
     long maxMpiWorkerStart = mpiWorkerDelays.values().stream().mapToLong(d -> d).max().orElseThrow(NoSuchElementException::new);
     long maxWorkerStart = workerStartDelays.values().stream().mapToLong(d -> d).max().orElseThrow(NoSuchElementException::new);
     double avgAllJoined = allJoinedDelays.values().stream().mapToLong(d -> d).average().orElseThrow(NoSuchElementException::new);
-    String line = String.format(
-        "summary\t%d\t%d\t%.1f", maxMpiWorkerStart, maxWorkerStart, avgAllJoined);
-    System.out.println(line);
+
+    if (outToConsole) {
+      String line = String.format(
+          "summary\t%d\t%d\t%.1f", maxMpiWorkerStart, maxWorkerStart, avgAllJoined);
+      System.out.println(line);
+    }
+
+    String summary = String.format(
+        "%s\t%d\t%d\t%.1f", jobID, maxMpiWorkerStart, maxWorkerStart, avgAllJoined);
+
+    return summary;
   }
 
   public static Map<Integer, Long> readDelays(List<String> lines, String delayStr) {
