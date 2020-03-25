@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class MPIDelays {
@@ -36,7 +37,7 @@ public class MPIDelays {
     if (summaryFile != null) {
       Path summaryPath = Paths.get(summaryFile);
       try {
-        Files.write(summaryPath, Collections.singleton(summary), Charset.defaultCharset());
+        Files.write(summaryPath, Collections.singleton(summary), Charset.defaultCharset(), StandardOpenOption.APPEND);
         System.out.println("Summary: " + summary);
       } catch (IOException e) {
         e.printStackTrace();
